@@ -16,7 +16,8 @@ export default function App() {
   const [error, setError] = useState('')
 
   async function request(url: string, options?: RequestInit) {
-    const response = await fetch(url, {
+    const apiUrl = import.meta.env.VITE_API_URL ?? ''
+    const response = await fetch(`${apiUrl}${url}`, {
       ...options,
       headers: { 'Content-Type': 'application/json', ...options?.headers },
     })
