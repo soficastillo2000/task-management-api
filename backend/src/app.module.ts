@@ -10,16 +10,26 @@ import { Task } from './tasks/task.entity.js';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['../.env.local', '.env'],
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST ?? 'localhost',
-      port: Number(process.env.DB_PORT ?? 5432),
-      username: process.env.DB_USERNAME ?? '',
-      password: process.env.DB_PASSWORD ?? '',
-      database: process.env.DB_DATABASE ?? 'task_management',
+      ...(process.env.DATABASE_URL
+        ? {
+            url: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: true },
+          }
+        : {
+            host: process.env.DB_HOST ?? 'localhost',
+            port: Number(process.env.DB_PORT ?? 5432),
+            username: process.env.DB_USERNAME ?? '',
+            password: process.env.DB_PASSWORD ?? '',
+            database: process.env.DB_DATABASE ?? 'task_management',
+          }),
       entities: [Task],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
     }),
     TasksModule,
   ],
