@@ -34,7 +34,7 @@ export class TasksController {
   @ApiBody({ type: CreateTaskDto })
   @ApiCreatedResponse({ type: Task })
   create(@Body() body: CreateTaskDto): Promise<Task> {
-    return this.tasksService.create(body.title);
+    return this.tasksService.create(body);
   }
 
   @Patch(':id')
